@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -11,6 +12,14 @@ class TestUsersSeeder extends Seeder
 {
     public function run(): void
     {
+        $organization = Organization::firstOrCreate(
+            ['name' => 'Demo Organization'],
+            [
+                'uuid' => (string) Str::uuid(),
+                'slug' => 'demo-organization',
+            ]
+        );
+
         $users = [
             ['name' => 'Owner User', 'email' => 'owner@test.com', 'role' => 'owner'],
             ['name' => 'Manager User', 'email' => 'manager@test.com', 'role' => 'manager'],
@@ -23,6 +32,7 @@ class TestUsersSeeder extends Seeder
                 ['email' => $data['email']],
                 [
                     'uuid' => (string) Str::uuid(),
+                    'organization_id' => $organization->id,
                     'name' => $data['name'],
                     'password' => Hash::make('password'),
                     'email_verified_at' => now(),
